@@ -10,6 +10,7 @@ import {
 } from "~/lib/cart.server";
 import { redirect } from "react-router";
 import { updateItemQuantity } from "~/lib/cart.server";
+import { Form, useNavigation, redirect } from "react-router";
 
 export function meta() {
   return [{ title: "Cart | LTP Store" }];
@@ -98,6 +99,9 @@ export async function action({ request }: Route.ActionArgs) {
 export default function Cart({ loaderData }: Route.ComponentProps) {
   const { items, total, cartCount } = loaderData;
 
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+
   return (
     <div>
       <Header cartCount={cartCount} />
@@ -135,7 +139,9 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
                             name="productId"
                             value={item!.product.id}
                           />
-                          <button type="submit">−</button>
+                          <button type="submit" disabled={isSubmitting}>
+                            −
+                          </button>
                         </Form>
 
                         <span>{item!.quantity}</span>
@@ -147,7 +153,9 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
                             name="productId"
                             value={item!.product.id}
                           />
-                          <button type="submit">+</button>
+                          <button type="submit" disabled={isSubmitting}>
+                            +
+                          </button>
                         </Form>
                       </div>
 
@@ -158,7 +166,7 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
 
                     <div className="cart-item__aside">
                       <p className="cart-item__line-total">
-                        ${item!.lineTotal}
+                        ${item!.lineTotal.toFixed(2)}
                       </p>
 
                       <Form method="post">
@@ -171,8 +179,9 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
                         <button
                           className="button button--secondary"
                           type="submit"
+                          disabled={isSubmitting}
                         >
-                          Remove
+                          {isSubmitting ? "Removing..." : "Remove"}
                         </button>
                       </Form>
                     </div>
@@ -181,7 +190,7 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
 
                 <div className="cart-total">
                   <span>Total</span>
-                  <span>${total}</span>
+                  <span>${total.toFixed(2)}</span>
                 </div>
               </>
             )}

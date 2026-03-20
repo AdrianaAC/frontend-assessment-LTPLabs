@@ -509,3 +509,8 @@ img {
   border-radius: 12px;
   cursor: pointer;
 }
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

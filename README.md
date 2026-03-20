@@ -1,87 +1,185 @@
-# Welcome to React Router!
+# LTP Store – Frontend Assessment
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A simple responsive e-commerce application built for the **LTP Labs frontend assessment**.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+This project implements a product listing experience, product detail page, and shopping cart flow using **route-based data loading and mutations**, with a focus on clean frontend architecture, responsiveness, and usability.
 
-## Features
+## Tech Stack
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+* React Router v7
+* TypeScript
+* Vite
+* CSS
+* DummyJSON API
+
+## Note on Framework Choice
+
+The original challenge requested **Remix**. Since Remix v2 has been upstreamed into React Router and the legacy Remix scaffolding flow is no longer straightforward, this project was implemented using the current **React Router framework tooling**, while preserving the same challenge intent:
+
+* route-based loaders
+* route-based actions
+* file-based route modules
+* server-driven mutations
+* URL-driven filtering, sorting, and pagination
+
+## Features Implemented
+
+### Homepage
+
+* Product listing fetched from API
+* Category filtering
+* Sorting options
+* Pagination
+* Responsive grid layout
+
+### Product Detail Page
+
+* Product data fetched by route
+* Product image gallery
+* Add to cart action
+* Loading/submission feedback
+
+### Shopping Cart
+
+* Cookie-based cart persistence
+* Add to cart from product detail
+* Increase quantity
+* Decrease quantity
+* Remove items
+* Cart total calculation
+* Cart count shown in header
+
+## Project Structure
+
+app/
+components/
+Header.tsx
+Pagination.tsx
+ProductCard.tsx
+ProductFilters.tsx
+lib/
+api.server.ts
+cart.server.ts
+types.ts
+url.ts
+routes/
+cart.tsx
+home.tsx
+product-detail.tsx
+app.css
+root.tsx
+routes.ts
+
+## Data Flow
+
+### Loaders
+
+Used to fetch:
+
+* product list
+* categories
+* selected product
+* cart contents
+
+### Actions
+
+Used to handle:
+
+* add to cart
+* increase quantity
+* decrease quantity
+* remove item
+
+## URL State
+
+The homepage uses URL search params for stateful navigation:
+
+* page
+* category
+* sort
+
+Examples:
+
+* /
+* /?category=beauty
+* /?sort=price-desc
+* /?category=fragrances&sort=title-asc&page=2
+
+## Screenshots
+
+### Homepage
+
+![Homepage](./public/screenshots/homepage.png)
+
+### Filters and Pagination
+
+![Filters and Pagination](./public/screenshots/filters-pagination.png)
+
+### Product Detail
+
+![Product Detail](./public/screenshots/product-detail.png)
+
+### Cart
+
+![Cart](./public/screenshots/cart.png)
 
 ## Getting Started
 
-### Installation
+Install dependencies:
 
-Install the dependencies:
-
-```bash
 npm install
-```
 
-### Development
+Run the development server:
 
-Start the development server with HMR:
-
-```bash
 npm run dev
-```
 
-Your application will be available at `http://localhost:5173`.
+## Assessment Requirements Coverage
 
-## Building for Production
+* Homepage implemented
+* Product detail page implemented
+* Shopping cart implemented
+* Product fetch from API implemented
+* Category filtering implemented
+* Sorting implemented
+* Pagination implemented
+* Add to cart implemented
+* Remove from cart implemented
+* Responsive layout implemented
+* Route-based loaders/actions implemented
+* Version-controlled project delivered
 
-Create a production build:
+## Possible Future Improvements
 
-```bash
-npm run build
-```
+* Figma-perfect visual refinement
+* Better mobile micro-interactions
+* Toast feedback when adding to cart
+* Quantity selector directly on product detail
+* Better image gallery with selectable active image
+* Persistent backend/cart storage
+* Automated tests
 
-## Deployment
+## Assessment Requirements Coverage
 
-### Docker Deployment
+- Homepage implemented
+- Product detail page implemented
+- Shopping cart implemented
+- Product fetch from API implemented
+- Category filtering implemented
+- Sorting implemented
+- Pagination implemented
+- Add to cart implemented
+- Remove from cart implemented
+- Responsive layout implemented
+- Route-based loaders/actions implemented
+- Version-controlled project delivered
 
-To build and run using Docker:
+## What I Focused On
 
-```bash
-docker build -t my-app .
+For this assessment, I prioritized:
 
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+* clear route structure
+* good separation of concerns
+* use of loader/action patterns
+* responsive layout
+* practical e-commerce UX
+* code that is easy to extend

@@ -74,7 +74,7 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
               Rating: {product.rating} · Stock: {product.stock}
             </p>
 
-            <p className="product-detail__price">${product.price}</p>
+            <p className="product-detail__price">${product.price.toFixed(2)}</p>
 
             <p className="product-detail__description">{product.description}</p>
 
