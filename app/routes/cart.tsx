@@ -8,6 +8,8 @@ import {
   getCartCount,
   removeItemFromCart,
 } from "~/lib/cart.server";
+import { redirect } from "react-router";
+import { updateItemQuantity } from "~/lib/cart.server";
 
 export function meta() {
   return [{ title: "Cart | LTP Store" }];
@@ -58,16 +60,36 @@ export async function action({ request }: Route.ActionArgs) {
 
   const cart = await getCart(request);
 
-  if (intent === "remove" && !Number.isNaN(productId)) {
-    const updatedCart = removeItemFromCart(cart, productId);
+  if (!Number.isNaN(productId)) {
+    if (intent === "remove") {
+      const updatedCart = removeItemFromCart(cart, productId);
 
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/cart",
-        "Set-Cookie": await commitCart(updatedCart),
-      },
-    });
+      return redirect("/cart", {
+        headers: {
+          "Set-Cookie": await commitCart(updatedCart),
+        },
+      });
+    }
+
+    if (intent === "increase") {
+      const updatedCart = updateItemQuantity(cart, productId, +1);
+
+      return redirect("/cart", {
+        headers: {
+          "Set-Cookie": await commitCart(updatedCart),
+        },
+      });
+    }
+
+    if (intent === "decrease") {
+      const updatedCart = updateItemQuantity(cart, productId, -1);
+
+      return redirect("/cart", {
+        headers: {
+          "Set-Cookie": await commitCart(updatedCart),
+        },
+      });
+    }
   }
 
   return null;
@@ -101,24 +123,46 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
                     />
 
                     <div>
-                      <h2 className="cart-item__title">{item!.product.title}</h2>
-                      <p className="cart-item__meta">
-                        Quantity: {item!.quantity}
-                      </p>
+                      <h2 className="cart-item__title">
+                        {item!.product.title}
+                      </h2>
+
+                      <div className="cart-item__quantity">
+                        <Form method="post">
+                          <input type="hidden" name="intent" value="decrease" />
+                          <input
+                            type="hidden"
+                            name="productId"
+                            value={item!.product.id}
+                          />
+                          <button type="submit">−</button>
+                        </Form>
+
+                        <span>{item!.quantity}</span>
+
+                        <Form method="post">
+                          <input type="hidden" name="intent" value="increase" />
+                          <input
+                            type="hidden"
+                            name="productId"
+                            value={item!.product.id}
+                          />
+                          <button type="submit">+</button>
+                        </Form>
+                      </div>
+
                       <p className="cart-item__meta">
                         Unit price: ${item!.product.price}
                       </p>
                     </div>
 
                     <div className="cart-item__aside">
-                      <p className="cart-item__line-total">${item!.lineTotal}</p>
+                      <p className="cart-item__line-total">
+                        ${item!.lineTotal}
+                      </p>
 
                       <Form method="post">
-                        <input
-                          type="hidden"
-                          name="intent"
-                          value="remove"
-                        />
+                        <input type="hidden" name="intent" value="remove" />
                         <input
                           type="hidden"
                           name="productId"

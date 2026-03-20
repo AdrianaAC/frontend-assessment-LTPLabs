@@ -487,3 +487,25 @@ img {
   font-weight: 800;
   color: #0f172a;
 }
+
+.product-gallery {
+  display: grid;
+  gap: 1rem;
+}
+
+.product-gallery__main img {
+  width: 100%;
+  border-radius: 20px;
+}
+
+.product-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.product-gallery__grid img {
+  width: 100%;
+  border-radius: 12px;
+  cursor: pointer;
+}

@@ -39,3 +39,21 @@ export function removeItemFromCart(cart: CartItem[], productId: number) {
 export function getCartCount(cart: CartItem[]) {
   return cart.reduce((total, item) => total + item.quantity, 0);
 }
+
+export function updateItemQuantity(
+  cart: CartItem[],
+  productId: number,
+  delta: number,
+) {
+  return cart
+    .map((item) => {
+      if (item.productId !== productId) return item;
+
+      const newQty = item.quantity + delta;
+
+      if (newQty <= 0) return null;
+
+      return { ...item, quantity: newQty };
+    })
+    .filter(Boolean) as CartItem[];
+}
