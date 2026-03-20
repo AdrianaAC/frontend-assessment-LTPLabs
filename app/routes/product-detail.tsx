@@ -1,14 +1,43 @@
-import { Form, Link } from "react-router";
+import { Form, Link, redirect } from "react-router";
 import type { Route } from "./+types/product-detail";
 import Header from "~/components/Header";
 import { getProductById } from "~/lib/api.server";
+import {
+  addItemToCart,
+  commitCart,
+  getCart,
+  getCartCount,
+} from "~/lib/cart.server";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
   if (!params.productId) {
     throw new Response("Product id is required", { status: 400 });
   }
 
-  return await getProductById(params.productId);
+  const [product, cart] = await Promise.all([
+    getProductById(params.productId),
+    getCart(request),
+  ]);
+
+  return {
+    product,
+    cartCount: getCartCount(cart),
+  };
+}
+
+export async function action({ request, params }: Route.ActionArgs) {
+  if (!params.productId) {
+    throw new Response("Product id is required", { status: 400 });
+  }
+
+  const cart = await getCart(request);
+  const updatedCart = addItemToCart(cart, Number(params.productId));
+
+  return redirect("/cart", {
+    headers: {
+      "Set-Cookie": await commitCart(updatedCart),
+    },
+  });
 }
 
 export function meta({ data }: Route.MetaArgs) {
@@ -16,15 +45,15 @@ export function meta({ data }: Route.MetaArgs) {
     return [{ title: "Product" }];
   }
 
-  return [{ title: `${data.title} | LTP Store` }];
+  return [{ title: `${data.product.title} | LTP Store` }];
 }
 
 export default function ProductDetail({ loaderData }: Route.ComponentProps) {
-  const product = loaderData;
+  const { product, cartCount } = loaderData;
 
   return (
     <div>
-      <Header />
+      <Header cartCount={cartCount} />
 
       <main className="container page-section">
         <Link to="/" className="back-link">
@@ -49,11 +78,13 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
 
             <p className="product-detail__description">{product.description}</p>
 
-            <Form method="post">
-              <button className="button button--primary" type="submit">
-                Add to cart
-              </button>
-            </Form>
+            <div className="product-detail__actions">
+              <Form method="post">
+                <button className="button button--primary" type="submit">
+                  Add to cart
+                </button>
+              </Form>
+            </div>
           </div>
         </section>
       </main>

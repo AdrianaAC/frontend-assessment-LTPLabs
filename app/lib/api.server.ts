@@ -51,6 +51,26 @@ export async function getProductById(productId: string) {
   return data;
 }
 
+export async function getProductsByIds(productIds: number[]) {
+  const uniqueIds = [...new Set(productIds)];
+
+  const products = await Promise.all(
+    uniqueIds.map(async (productId) => {
+      const response = await fetch(`${BASE_URL}/products/${productId}`);
+
+      if (!response.ok) {
+        throw new Response("Failed to fetch cart products", {
+          status: response.status,
+        });
+      }
+
+      return (await response.json()) as Product;
+    }),
+  );
+
+  return products;
+}
+
 export async function getCategories() {
   const response = await fetch(`${BASE_URL}/products/category-list`);
 

@@ -4,6 +4,7 @@ import Pagination from "~/components/Pagination";
 import ProductCard from "~/components/ProductCard";
 import ProductFilters from "~/components/ProductFilters";
 import { getCategories, getProducts } from "~/lib/api.server";
+import { getCart, getCartCount } from "~/lib/cart.server";
 
 export function meta() {
   return [
@@ -22,13 +23,14 @@ export async function loader({ request }: Route.LoaderArgs) {
   const categoryParam = url.searchParams.get("category") || "all";
   const sortParam = url.searchParams.get("sort") || "default";
 
-  const [productsData, categories] = await Promise.all([
+  const [productsData, categories, cart] = await Promise.all([
     getProducts({
       page: pageParam,
       category: categoryParam === "all" ? undefined : categoryParam,
       sort: sortParam === "default" ? undefined : sortParam,
     }),
     getCategories(),
+    getCart(request),
   ]);
 
   return {
@@ -36,6 +38,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     categories,
     selectedCategory: categoryParam,
     selectedSort: sortParam,
+    cartCount: getCartCount(cart),
   };
 }
 
@@ -48,11 +51,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     selectedCategory,
     selectedSort,
     total,
+    cartCount,
   } = loaderData;
 
   return (
     <div>
-      <Header />
+      <Header cartCount={cartCount} />
 
       <main className="container page-section">
         <section className="hero">
