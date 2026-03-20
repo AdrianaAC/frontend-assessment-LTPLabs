@@ -21,7 +21,7 @@ export default function ProductCard({ product }: Props) {
           <p className="card__category">{product.category}</p>
           <h2 className="card__title">{product.title}</h2>
           <p className="card__description">{product.description}</p>
-          <p className="card__price">${product.price}</p>
+          <p className="card__price">${product.price.toFixed(2)}</p>
         </div>
       </Link>
     </article>
