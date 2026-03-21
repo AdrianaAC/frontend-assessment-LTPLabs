@@ -1,3 +1,4 @@
+import { Link, useNavigation, useRouteError, isRouteErrorResponse } from "react-router";
 import type { Route } from "./+types/home";
 import CategorySidebar from "~/components/CategorySidebar";
 import Header from "~/components/Header";
@@ -43,6 +44,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
+  const navigation = useNavigation();
+
   const {
     products,
     categories,
@@ -55,12 +58,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     cartCount,
   } = loaderData;
 
+  const isNavigating = navigation.state === "loading";
   const rangeStart = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const rangeEnd = total === 0 ? 0 : Math.min(rangeStart + products.length - 1, total);
 
   return (
     <>
-    <Header cartCount={cartCount} variant="home" />
+      <Header cartCount={cartCount} variant="home" />
 
       <main className="site-shell site-shell--home homepage">
         <div className="page-label">Homepage</div>
@@ -79,7 +83,22 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
           <div className="store-body">
             <section className="store-grid-area" aria-label="Product list">
-              {products.length > 0 ? (
+              {isNavigating ? (
+                <div className="product-grid" aria-live="polite" aria-busy="true">
+                  {Array.from({ length: 9 }).map((_, index) => (
+                    <article
+                      key={index}
+                      className="product-card product-card--skeleton"
+                    >
+                      <div className="product-card__image-wrap skeleton-block" />
+                      <div className="product-card__content">
+                        <div className="skeleton-line skeleton-line--title" />
+                        <div className="skeleton-line skeleton-line--price" />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : products.length > 0 ? (
                 <div className="product-grid">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
@@ -87,7 +106,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 </div>
               ) : (
                 <div className="store-empty-state">
-                  No products were found for the selected filters.
+                  No products match the selected category or sort option.
                 </div>
               )}
 
@@ -108,5 +127,38 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </section>
       </main>
     </>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  let title = "Unable to load products";
+  let message =
+    "We could not load the product list right now. Please try again.";
+
+  if (isRouteErrorResponse(error)) {
+    title = `${error.status} ${error.statusText}`;
+    message =
+      typeof error.data === "string"
+        ? error.data
+        : "The homepage could not be loaded.";
+  } else if (error instanceof Error) {
+    message = error.message;
+  }
+
+  return (
+    <main className="site-shell site-shell--home homepage">
+      <section className="state-card">
+        <p className="state-card__eyebrow">Homepage</p>
+        <h1 className="state-card__title">{title}</h1>
+        <p className="state-card__text">{message}</p>
+        <div className="state-card__actions">
+          <Link to="/" className="state-card__button">
+            Retry
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }
