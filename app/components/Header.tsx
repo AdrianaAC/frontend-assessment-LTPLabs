@@ -1,33 +1,51 @@
 import { Link } from "react-router";
 
+type HeaderVariant = "home" | "detail";
+
 type Props = {
   cartCount?: number;
+  variant?: HeaderVariant;
 };
 
-export default function Header({ cartCount = 0 }: Props) {
+const navByVariant: Record<
+  HeaderVariant,
+  Array<{ label: string; to: string }>
+> = {
+  home: [
+    { label: "Home", to: "/" },
+    { label: "Shop", to: "/shop" },
+    { label: "About", to: "/about" },
+    { label: "Contact", to: "/contact" },
+    { label: "Blog", to: "/blog" },
+  ],
+  detail: [
+    { label: "Home", to: "/" },
+    { label: "Shop", to: "/shop" },
+    { label: "Deals", to: "/deals" },
+    { label: "Contact", to: "/contact" },
+    { label: "Account", to: "/account" },
+  ],
+};
+
+export default function Header({
+  cartCount = 0,
+  variant = "home",
+}: Props) {
+  const navItems = navByVariant[variant];
+
   return (
-    <header className="site-header">
+    <header className={`site-header site-header--${variant}`}>
       <div className="site-shell site-header__inner">
         <Link to="/" className="site-header__brand">
           THE ONLINE STORE
         </Link>
 
         <nav className="site-header__nav" aria-label="Primary navigation">
-          <Link to="/" className="site-header__nav-link">
-            Home
-          </Link>
-          <Link to="/shop" className="site-header__nav-link">
-            Shop
-          </Link>
-          <Link to="/deals" className="site-header__nav-link">
-            Deals
-          </Link>
-          <Link to="/contact" className="site-header__nav-link">
-            Contact
-          </Link>
-          <Link to="/account" className="site-header__nav-link">
-            Account
-          </Link>
+          {navItems.map((item) => (
+            <Link key={item.label} to={item.to} className="site-header__nav-link">
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="site-header__actions" aria-label="Store actions">
@@ -47,13 +65,13 @@ export default function Header({ cartCount = 0 }: Props) {
                 r="5.5"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.7"
+                strokeWidth="1.5"
               />
               <path
                 d="M16 16L20 20"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.7"
+                strokeWidth="1.5"
                 strokeLinecap="round"
               />
             </svg>
@@ -72,16 +90,16 @@ export default function Header({ cartCount = 0 }: Props) {
               <circle
                 cx="12"
                 cy="8"
-                r="3.2"
+                r="3.1"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.7"
+                strokeWidth="1.5"
               />
               <path
-                d="M6.5 19.5C7.6 16.8 9.5 15.5 12 15.5C14.5 15.5 16.4 16.8 17.5 19.5"
+                d="M6.8 19.2C7.8 16.8 9.6 15.6 12 15.6C14.4 15.6 16.2 16.8 17.2 19.2"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.7"
+                strokeWidth="1.5"
                 strokeLinecap="round"
               />
             </svg>
@@ -101,14 +119,14 @@ export default function Header({ cartCount = 0 }: Props) {
                 d="M8 8H16L15.2 18H8.8L8 8Z"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.7"
+                strokeWidth="1.5"
                 strokeLinejoin="round"
               />
               <path
                 d="M9.5 8V6.8C9.5 5.4 10.6 4.3 12 4.3C13.4 4.3 14.5 5.4 14.5 6.8V8"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.7"
+                strokeWidth="1.5"
                 strokeLinecap="round"
               />
             </svg>

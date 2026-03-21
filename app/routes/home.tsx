@@ -60,9 +60,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <Header cartCount={cartCount} />
+    <Header cartCount={cartCount} variant="home" />
 
-      <main className="site-shell homepage">
+      <main className="site-shell site-shell--home homepage">
         <div className="page-label">Homepage</div>
 
         <section className="store-layout">

@@ -54,7 +54,7 @@ export default function Pagination({
               className="pagination__ellipsis"
               aria-hidden="true"
             >
-              …
+              ...
             </span>
           ) : (
             <Link
