@@ -15,7 +15,7 @@ export default function CategorySidebar({
   const visibleCategories = categories.slice(0, 4);
 
   return (
-    <aside className="store-sidebar">
+    <aside className="store-sidebar" aria-label="Product categories">
       <h2 className="store-sidebar__title">Categories</h2>
 
       <div className="store-sidebar__list">
@@ -31,6 +31,7 @@ export default function CategorySidebar({
                 sort: selectedSort,
               })}
               className={`store-sidebar__item ${isActive ? "is-active" : ""}`}
+              aria-current={isActive ? "true" : undefined}
             >
               <span className="store-sidebar__checkbox" aria-hidden="true" />
               <span className="store-sidebar__label">

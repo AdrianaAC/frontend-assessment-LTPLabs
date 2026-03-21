@@ -104,7 +104,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Cart({ loaderData }: Route.ComponentProps) {
-  const { items, subtotal, shipping, total, cartCount, addedToCart } = loaderData;
+  const { items, subtotal, shipping, total, cartCount } = loaderData;
   const navigation = useNavigation();
   const submittingFormData = navigation.formData;
   const submittingProductId = Number(submittingFormData?.get("productId"));
@@ -112,22 +112,17 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <Header cartCount={cartCount} />
+      <Header cartCount={cartCount} variant="detail" />
 
-      <main className="site-shell cart-page">
+      <main className="site-shell site-shell--detail cart-page">
         <div className="page-label">Shopping cart</div>
-
-        {addedToCart ? (
-          <div className="cart-banner" role="status" aria-live="polite">
-            Product added to cart.
-          </div>
-        ) : null}
 
         {items.length === 0 ? (
           <section className="cart-empty">
             <h1 className="cart-empty__title">Your cart is empty</h1>
             <p className="cart-empty__text">
-              You have not added any products yet. Start exploring the store and add a few items.
+              You have not added any products yet. Start exploring the store and
+              add a few items.
             </p>
             <Link to="/" className="cart-empty__link">
               Continue shopping
@@ -158,10 +153,12 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
                     </div>
 
                     <div className="cart-item__body">
-                      <p className="cart-item__title">{item!.product.title}</p>
-                      <p className="cart-item__price">
-                        ${item!.product.price.toFixed(2)}
-                      </p>
+                      <div className="cart-item__info">
+                        <p className="cart-item__title">{item!.product.title}</p>
+                        <p className="cart-item__price">
+                          ${item!.product.price.toFixed(2)}
+                        </p>
+                      </div>
 
                       <div className="cart-item__controls">
                         <Form method="post" className="cart-item__quantity">
@@ -212,7 +209,37 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
                             disabled={isRowSubmitting}
                             aria-label={`Remove ${item!.product.title} from cart`}
                           >
-                            {isRemoving ? "…" : "🗑"}
+                            {isRemoving ? (
+                              "…"
+                            ) : (
+                              <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                                className="cart-item__remove-icon"
+                              >
+                                <path
+                                  d="M8 8H16L15.4 18H8.6L8 8Z"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.4"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M9.5 8V6.8C9.5 5.9 10.2 5.2 11.1 5.2H12.9C13.8 5.2 14.5 5.9 14.5 6.8V8"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.4"
+                                  strokeLinecap="round"
+                                />
+                                <path
+                                  d="M7 8H17"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.4"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            )}
                           </button>
                         </Form>
                       </div>
