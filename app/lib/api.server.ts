@@ -27,8 +27,6 @@ export async function getProducts({
       return {
         products: [],
         total: 0,
-        skip: 0,
-        limit: PAGE_SIZE,
         currentPage: 1,
         pageSize: PAGE_SIZE,
         totalPages: 1,
@@ -50,8 +48,6 @@ export async function getProducts({
   return {
     products: paginatedProducts,
     total,
-    skip,
-    limit: PAGE_SIZE,
     currentPage,
     pageSize: PAGE_SIZE,
     totalPages,

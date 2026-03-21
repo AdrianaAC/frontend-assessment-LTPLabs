@@ -18,13 +18,3 @@ export type ProductsResponse = {
   skip: number;
   limit: number;
 };
-
-export type CartItem = {
-  productId: number;
-  quantity: number;
-};
-
-export type CartProduct = {
-  product: Product;
-  quantity: number;
-};

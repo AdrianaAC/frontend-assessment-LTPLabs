@@ -22,8 +22,6 @@ export function meta() {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const addedToCart = url.searchParams.get("added") === "1";
   const cart = await getCart(request);
 
   if (cart.length === 0) {
@@ -33,7 +31,6 @@ export async function loader({ request }: Route.LoaderArgs) {
       shipping: 20,
       total: 20,
       cartCount: 0,
-      addedToCart,
     };
   }
 
@@ -65,7 +62,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     shipping,
     total,
     cartCount: getCartCount(cart),
-    addedToCart,
   };
 }
 
