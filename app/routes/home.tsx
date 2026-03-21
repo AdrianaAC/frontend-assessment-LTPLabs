@@ -51,12 +51,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     selectedCategory,
     selectedSort,
     total,
+    pageSize,
     cartCount,
   } = loaderData;
 
-  const limit = 9;
-  const rangeStart = total === 0 ? 0 : (currentPage - 1) * limit + 1;
-  const rangeEnd = total === 0 ? 0 : Math.min(currentPage * limit, total);
+  const rangeStart = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const rangeEnd = total === 0 ? 0 : Math.min(rangeStart + products.length - 1, total);
 
   return (
     <>

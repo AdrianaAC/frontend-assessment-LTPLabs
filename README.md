@@ -12,15 +12,54 @@ This project implements a product listing experience, product detail page, and s
 * CSS
 * DummyJSON API
 
-## Note on Framework Choice
+## Framework Note: React Router v7 instead of Remix
 
-The original challenge requested **Remix**. Since Remix v2 has been upstreamed into React Router and the legacy Remix scaffolding flow is no longer straightforward, this project was implemented using the current **React Router framework tooling**, while preserving the same challenge intent:
+This challenge requested Remix. I implemented the project with **React Router v7**, which is the maintained continuation of the same route-module model that Remix popularized.
 
-* route-based loaders
-* route-based actions
-* file-based route modules
-* server-driven mutations
-* URL-driven filtering, sorting, and pagination
+This choice was intentional and made to preserve the challenge’s architectural intent while using the current actively maintained routing stack.
+
+### Remix concepts preserved in this implementation
+
+The project keeps the exact data-flow style expected from a Remix application:
+
+- **Route modules**
+  - each page lives in its own route file
+- **Loader functions**
+  - used for server-side data loading
+  - homepage products
+  - categories
+  - product detail
+  - cart contents
+- **Action functions**
+  - used for server-side mutations
+  - add to cart
+  - increase quantity
+  - decrease quantity
+  - remove item
+- **URL-driven state**
+  - pagination, sorting, and filtering are read from the URL
+- **Server-first data flow**
+  - data is fetched in loaders, not duplicated in client-only state
+- **Mutation + redirect pattern**
+  - cart updates happen through actions and return redirects
+- **Cookie-based persistence**
+  - cart state is stored on the server boundary through cookies
+- **Nested app routing model**
+  - the app uses route files, shared layout structure, and route-based rendering
+- **Progressive enhancement friendly forms**
+  - forms submit through route actions rather than custom client-side mutation plumbing
+
+### Why this still matches the spirit of the challenge
+
+Although the project is not scaffolded with Remix itself, it follows the same architectural model the challenge was evaluating:
+
+- route-based data loading
+- route-based mutations
+- clean routing structure
+- server-oriented state flow
+- frontend best practices
+
+In practice, this implementation preserves the core Remix patterns the assessment was asking for, while using the current maintained evolution of that ecosystem.
 
 ## Features Implemented
 
@@ -148,6 +187,7 @@ npm run dev
 * Route-based loaders/actions implemented
 * Version-controlled project delivered
 
+
 ## Possible Future Improvements
 
 * Figma-perfect visual refinement
@@ -158,20 +198,6 @@ npm run dev
 * Persistent backend/cart storage
 * Automated tests
 
-## Assessment Requirements Coverage
-
-- Homepage implemented
-- Product detail page implemented
-- Shopping cart implemented
-- Product fetch from API implemented
-- Category filtering implemented
-- Sorting implemented
-- Pagination implemented
-- Add to cart implemented
-- Remove from cart implemented
-- Responsive layout implemented
-- Route-based loaders/actions implemented
-- Version-controlled project delivered
 
 ## What I Focused On
 
@@ -183,3 +209,5 @@ For this assessment, I prioritized:
 * responsive layout
 * practical e-commerce UX
 * code that is easy to extend
+
+

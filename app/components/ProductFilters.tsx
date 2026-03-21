@@ -24,15 +24,16 @@ export default function ProductFilters({
       <select
         id="sort"
         name="sort"
-        defaultValue={selectedSort}
+        value={selectedSort}
         className="store-sort-select"
+        aria-label="Sort products"
         onChange={(event) => event.currentTarget.form?.requestSubmit()}
       >
         <option value="default">Sort by</option>
-        <option value="price-asc">Price low to high</option>
-        <option value="price-desc">Price high to low</option>
-        <option value="title-asc">Title A to Z</option>
-        <option value="title-desc">Title Z to A</option>
+        <option value="price-asc">Price ↑</option>
+        <option value="price-desc">Price ↓</option>
+        <option value="title-asc">Title A-Z</option>
+        <option value="title-desc">Title Z-A</option>
       </select>
     </Form>
   );

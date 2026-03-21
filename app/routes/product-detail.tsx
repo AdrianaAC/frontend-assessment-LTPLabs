@@ -33,7 +33,7 @@ export async function action({ request, params }: Route.ActionArgs) {
   const cart = await getCart(request);
   const updatedCart = addItemToCart(cart, Number(params.productId));
 
-  return redirect("/cart", {
+  return redirect("/cart?added=1", {
     headers: {
       "Set-Cookie": await commitCart(updatedCart),
     },
@@ -59,7 +59,13 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
       <Header cartCount={cartCount} />
 
       <main className="site-shell product-detail-page">
-        <div className="page-label">{product.title}</div>
+        <div className="page-label">Product detail</div>
+
+        <div className="product-detail__back-row">
+          <Link to="/" className="product-detail__back-link">
+            ← Back to products
+          </Link>
+        </div>
 
         <section className="product-detail">
           <div className="product-detail__media">
@@ -92,11 +98,6 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
             </div>
           </div>
         </section>
-        <div className="product-detail__back-row">
-          <Link to="/" className="product-detail__back-link">
-            ← Back to products
-          </Link>
-        </div>
       </main>
     </>
   );

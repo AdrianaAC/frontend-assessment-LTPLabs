@@ -15,6 +15,8 @@ export function meta() {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  const addedToCart = url.searchParams.get("added") === "1";
   const cart = await getCart(request);
 
   if (cart.length === 0) {
@@ -24,6 +26,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       shipping: 20,
       total: 20,
       cartCount: 0,
+      addedToCart,
     };
   }
 
@@ -55,6 +58,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     shipping,
     total,
     cartCount: getCartCount(cart),
+    addedToCart,
   };
 }
 
@@ -100,7 +104,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Cart({ loaderData }: Route.ComponentProps) {
-  const { items, subtotal, shipping, total, cartCount } = loaderData;
+  const { items, subtotal, shipping, total, cartCount, addedToCart } = loaderData;
   const navigation = useNavigation();
   const submittingFormData = navigation.formData;
   const submittingProductId = Number(submittingFormData?.get("productId"));
@@ -113,10 +117,18 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
       <main className="site-shell cart-page">
         <div className="page-label">Shopping cart</div>
 
+        {addedToCart ? (
+          <div className="cart-banner" role="status" aria-live="polite">
+            Product added to cart.
+          </div>
+        ) : null}
+
         {items.length === 0 ? (
           <section className="cart-empty">
             <h1 className="cart-empty__title">Your cart is empty</h1>
-            <p className="cart-empty__text">Add a few products and come back here.</p>
+            <p className="cart-empty__text">
+              You have not added any products yet. Start exploring the store and add a few items.
+            </p>
             <Link to="/" className="cart-empty__link">
               Continue shopping
             </Link>
@@ -126,6 +138,14 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
             <div className="cart-items">
               {items.map((item) => {
                 const isRowSubmitting = submittingProductId === item!.product.id;
+                const isRemoving =
+                  isRowSubmitting && submittingIntent === "remove";
+                const isIncreasing =
+                  isRowSubmitting && submittingIntent === "increase";
+                const isDecreasing =
+                  isRowSubmitting && submittingIntent === "decrease";
+                const isAtMin = item!.quantity <= 1;
+                const isAtMax = item!.quantity >= 99;
 
                 return (
                   <article key={item!.product.id} className="cart-item">
@@ -139,37 +159,51 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
 
                     <div className="cart-item__body">
                       <p className="cart-item__title">{item!.product.title}</p>
-                      <p className="cart-item__price">${item!.product.price.toFixed(2)}</p>
+                      <p className="cart-item__price">
+                        ${item!.product.price.toFixed(2)}
+                      </p>
 
                       <div className="cart-item__controls">
                         <Form method="post" className="cart-item__quantity">
-                          <input type="hidden" name="productId" value={item!.product.id} />
+                          <input
+                            type="hidden"
+                            name="productId"
+                            value={item!.product.id}
+                          />
 
                           <button
                             type="submit"
                             name="intent"
                             value="decrease"
                             className="cart-item__qty-btn"
-                            disabled={isRowSubmitting}
+                            disabled={isRowSubmitting || isAtMin}
+                            aria-label={`Decrease quantity of ${item!.product.title}`}
                           >
-                            −
+                            {isDecreasing ? "…" : "−"}
                           </button>
 
-                          <span className="cart-item__qty-value">{item!.quantity}</span>
+                          <span className="cart-item__qty-value">
+                            {item!.quantity}
+                          </span>
 
                           <button
                             type="submit"
                             name="intent"
                             value="increase"
                             className="cart-item__qty-btn"
-                            disabled={isRowSubmitting}
+                            disabled={isRowSubmitting || isAtMax}
+                            aria-label={`Increase quantity of ${item!.product.title}`}
                           >
-                            +
+                            {isIncreasing ? "…" : "+"}
                           </button>
                         </Form>
 
                         <Form method="post" className="cart-item__remove-form">
-                          <input type="hidden" name="productId" value={item!.product.id} />
+                          <input
+                            type="hidden"
+                            name="productId"
+                            value={item!.product.id}
+                          />
                           <button
                             type="submit"
                             name="intent"
@@ -178,7 +212,7 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
                             disabled={isRowSubmitting}
                             aria-label={`Remove ${item!.product.title} from cart`}
                           >
-                            {isRowSubmitting && submittingIntent === "remove" ? "…" : "🗑"}
+                            {isRemoving ? "…" : "🗑"}
                           </button>
                         </Form>
                       </div>
@@ -214,9 +248,15 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
 
               <div className="cart-summary__divider" />
 
-              <form className="cart-summary__promo" onSubmit={(event) => event.preventDefault()}>
+              <form
+                className="cart-summary__promo"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <div className="cart-summary__promo-field">
-                  <label htmlFor="promo-code" className="cart-summary__promo-label">
+                  <label
+                    htmlFor="promo-code"
+                    className="cart-summary__promo-label"
+                  >
                     Promo code
                   </label>
                   <input

@@ -16,18 +16,18 @@ export default function Header({ cartCount = 0 }: Props) {
           <Link to="/" className="site-header__nav-link">
             Home
           </Link>
-          <a href="#shop" className="site-header__nav-link">
+          <Link to="/shop" className="site-header__nav-link">
             Shop
-          </a>
-          <a href="#deals" className="site-header__nav-link">
+          </Link>
+          <Link to="/deals" className="site-header__nav-link">
             Deals
-          </a>
-          <a href="#contact" className="site-header__nav-link">
+          </Link>
+          <Link to="/contact" className="site-header__nav-link">
             Contact
-          </a>
-          <a href="#account" className="site-header__nav-link">
+          </Link>
+          <Link to="/account" className="site-header__nav-link">
             Account
-          </a>
+          </Link>
         </nav>
 
         <div className="site-header__actions" aria-label="Store actions">
@@ -59,8 +59,8 @@ export default function Header({ cartCount = 0 }: Props) {
             </svg>
           </button>
 
-          <button
-            type="button"
+          <Link
+            to="/account"
             className="site-header__icon-button"
             aria-label="Account"
           >
@@ -85,7 +85,7 @@ export default function Header({ cartCount = 0 }: Props) {
                 strokeLinecap="round"
               />
             </svg>
-          </button>
+          </Link>
 
           <Link
             to="/cart"
