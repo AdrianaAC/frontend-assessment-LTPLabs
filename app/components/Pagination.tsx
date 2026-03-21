@@ -19,37 +19,58 @@ export default function Pagination({
   }
 
   const pages = getVisiblePages(currentPage, totalPages);
+  const isFirstPage = currentPage <= 1;
+  const isLastPage = currentPage >= totalPages;
 
   return (
-    <nav className="pagination" aria-label="Products pagination">
-      <Link
-        className={`pagination__button ${currentPage === 1 ? "pagination__button--disabled" : ""}`}
-        to={buildProductsUrl({
-          page: currentPage - 1,
-          category,
-          sort,
-        })}
-        aria-disabled={currentPage === 1}
-        tabIndex={currentPage === 1 ? -1 : undefined}
-      >
-        ← Previous
-      </Link>
+    <nav className="pagination" aria-label="Pagination">
+      {isFirstPage ? (
+        <span
+          className="pagination__arrow is-disabled"
+          aria-disabled="true"
+          aria-label="Previous page unavailable"
+        >
+          ‹
+        </span>
+      ) : (
+        <Link
+          to={buildProductsUrl({
+            page: currentPage - 1,
+            category,
+            sort,
+          })}
+          className="pagination__arrow"
+          aria-label="Go to previous page"
+        >
+          ‹
+        </Link>
+      )}
 
       <div className="pagination__pages">
         {pages.map((page, index) =>
           page === "ellipsis" ? (
-            <span key={`ellipsis-${index}`} className="pagination__ellipsis">
+            <span
+              key={`ellipsis-${index}`}
+              className="pagination__ellipsis"
+              aria-hidden="true"
+            >
               …
             </span>
           ) : (
             <Link
               key={page}
-              className={`pagination__page ${page === currentPage ? "pagination__page--active" : ""}`}
               to={buildProductsUrl({
                 page,
                 category,
                 sort,
               })}
+              className={`pagination__page ${page === currentPage ? "is-active" : ""}`}
+              aria-current={page === currentPage ? "page" : undefined}
+              aria-label={
+                page === currentPage
+                  ? `Current page, page ${page}`
+                  : `Go to page ${page}`
+              }
             >
               {page}
             </Link>
@@ -57,18 +78,27 @@ export default function Pagination({
         )}
       </div>
 
-      <Link
-        className={`pagination__button ${currentPage === totalPages ? "pagination__button--disabled" : ""}`}
-        to={buildProductsUrl({
-          page: currentPage + 1,
-          category,
-          sort,
-        })}
-        aria-disabled={currentPage === totalPages}
-        tabIndex={currentPage === totalPages ? -1 : undefined}
-      >
-        Next →
-      </Link>
+      {isLastPage ? (
+        <span
+          className="pagination__arrow is-disabled"
+          aria-disabled="true"
+          aria-label="Next page unavailable"
+        >
+          ›
+        </span>
+      ) : (
+        <Link
+          to={buildProductsUrl({
+            page: currentPage + 1,
+            category,
+            sort,
+          })}
+          className="pagination__arrow"
+          aria-label="Go to next page"
+        >
+          ›
+        </Link>
+      )}
     </nav>
   );
 }

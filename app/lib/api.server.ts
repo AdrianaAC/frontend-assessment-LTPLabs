@@ -1,7 +1,7 @@
 import type { Product, ProductsResponse } from "./types";
 
 const BASE_URL = "https://dummyjson.com";
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 9;
 
 export type ProductsQuery = {
   page?: number;
@@ -14,29 +14,47 @@ export async function getProducts({
   category,
   sort,
 }: ProductsQuery = {}) {
-  const safePage = Number.isNaN(page) || page < 1 ? 1 : page;
-  const skip = (safePage - 1) * PAGE_SIZE;
+  const safeRequestedPage = Number.isNaN(page) || page < 1 ? 1 : page;
 
   const productsUrl = category
-    ? `${BASE_URL}/products/category/${encodeURIComponent(category)}?limit=${PAGE_SIZE}&skip=${skip}`
-    : `${BASE_URL}/products?limit=${PAGE_SIZE}&skip=${skip}`;
+    ? `${BASE_URL}/products/category/${encodeURIComponent(category)}`
+    : `${BASE_URL}/products?limit=0`;
 
   const response = await fetch(productsUrl);
 
   if (!response.ok) {
+    if (response.status === 404) {
+      return {
+        products: [],
+        total: 0,
+        skip: 0,
+        limit: PAGE_SIZE,
+        currentPage: 1,
+        pageSize: PAGE_SIZE,
+        totalPages: 1,
+      };
+    }
+
     throw new Response("Failed to fetch products", { status: response.status });
   }
 
   const data: ProductsResponse = await response.json();
-
   const sortedProducts = sortProducts(data.products, sort);
 
+  const total = sortedProducts.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const currentPage = Math.min(safeRequestedPage, totalPages);
+  const skip = (currentPage - 1) * PAGE_SIZE;
+  const paginatedProducts = sortedProducts.slice(skip, skip + PAGE_SIZE);
+
   return {
-    ...data,
-    products: sortedProducts,
-    currentPage: safePage,
+    products: paginatedProducts,
+    total,
+    skip,
+    limit: PAGE_SIZE,
+    currentPage,
     pageSize: PAGE_SIZE,
-    totalPages: Math.max(1, Math.ceil(data.total / PAGE_SIZE)),
+    totalPages,
   };
 }
 

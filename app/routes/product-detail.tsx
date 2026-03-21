@@ -1,4 +1,4 @@
-import { Form, Link, redirect } from "react-router";
+import { Form, Link, redirect, useNavigation } from "react-router";
 import type { Route } from "./+types/product-detail";
 import Header from "~/components/Header";
 import { getProductById } from "~/lib/api.server";
@@ -33,7 +33,7 @@ export async function action({ request, params }: Route.ActionArgs) {
   const cart = await getCart(request);
   const updatedCart = addItemToCart(cart, Number(params.productId));
 
-  return redirect("/cart", {
+  return redirect("/cart?added=1", {
     headers: {
       "Set-Cookie": await commitCart(updatedCart),
     },
@@ -42,52 +42,63 @@ export async function action({ request, params }: Route.ActionArgs) {
 
 export function meta({ data }: Route.MetaArgs) {
   if (!data) {
-    return [{ title: "Product" }];
+    return [{ title: "Product | The Online Store" }];
   }
 
-  return [{ title: `${data.product.title} | LTP Store` }];
+  return [{ title: `${data.product.title} | The Online Store` }];
 }
 
 export default function ProductDetail({ loaderData }: Route.ComponentProps) {
   const { product, cartCount } = loaderData;
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+  const mainImage = product.images?.[0] ?? product.thumbnail;
 
   return (
-    <div>
+    <>
       <Header cartCount={cartCount} />
 
-      <main className="container page-section">
-        <Link to="/" className="back-link">
-          ← Back to products
-        </Link>
+      <main className="site-shell product-detail-page">
+        <div className="page-label">Product detail</div>
+
+        <div className="product-detail__back-row">
+          <Link to="/" className="product-detail__back-link">
+            ← Back to products
+          </Link>
+        </div>
 
         <section className="product-detail">
           <div className="product-detail__media">
-            <img src={product.thumbnail} alt={product.title} />
+            <img
+              src={mainImage}
+              alt={product.title}
+              className="product-detail__image"
+            />
           </div>
 
           <div className="product-detail__content">
-            <p className="product-detail__eyebrow">{product.category}</p>
             <h1 className="product-detail__title">{product.title}</h1>
-
-            <p className="product-detail__meta">
-              {product.brand ? `Brand: ${product.brand} · ` : ""}
-              Rating: {product.rating} · Stock: {product.stock}
-            </p>
-
             <p className="product-detail__price">${product.price.toFixed(2)}</p>
 
-            <p className="product-detail__description">{product.description}</p>
+            <Form method="post" className="product-detail__form">
+              <button
+                type="submit"
+                className="product-detail__button"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Adding..." : "Add to Cart"}
+              </button>
+            </Form>
 
-            <div className="product-detail__actions">
-              <Form method="post">
-                <button className="button button--primary" type="submit">
-                  Add to cart
-                </button>
-              </Form>
+            <div className="product-detail__divider" />
+
+            <div className="product-detail__description">
+              <p>Product Details</p>
+              <p>{product.description}</p>
             </div>
           </div>
         </section>
       </main>
-    </div>
+    </>
   );
 }
