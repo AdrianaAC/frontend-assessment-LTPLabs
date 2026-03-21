@@ -21,18 +21,18 @@ export default function Pagination({
   const pages = getVisiblePages(currentPage, totalPages);
 
   return (
-    <nav className="pagination" aria-label="Products pagination">
+    <nav className="pagination" aria-label="Pagination">
       <Link
-        className={`pagination__button ${currentPage === 1 ? "pagination__button--disabled" : ""}`}
         to={buildProductsUrl({
           page: currentPage - 1,
           category,
           sort,
         })}
+        className={`pagination__arrow ${currentPage === 1 ? "is-disabled" : ""}`}
         aria-disabled={currentPage === 1}
         tabIndex={currentPage === 1 ? -1 : undefined}
       >
-        ← Previous
+        ‹
       </Link>
 
       <div className="pagination__pages">
@@ -44,12 +44,13 @@ export default function Pagination({
           ) : (
             <Link
               key={page}
-              className={`pagination__page ${page === currentPage ? "pagination__page--active" : ""}`}
               to={buildProductsUrl({
                 page,
                 category,
                 sort,
               })}
+              className={`pagination__page ${page === currentPage ? "is-active" : ""}`}
+              aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
             </Link>
@@ -58,16 +59,16 @@ export default function Pagination({
       </div>
 
       <Link
-        className={`pagination__button ${currentPage === totalPages ? "pagination__button--disabled" : ""}`}
         to={buildProductsUrl({
           page: currentPage + 1,
           category,
           sort,
         })}
+        className={`pagination__arrow ${currentPage === totalPages ? "is-disabled" : ""}`}
         aria-disabled={currentPage === totalPages}
         tabIndex={currentPage === totalPages ? -1 : undefined}
       >
-        Next →
+        ›
       </Link>
     </nav>
   );
