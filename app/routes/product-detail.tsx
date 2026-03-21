@@ -59,7 +59,7 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
       <Header cartCount={cartCount} />
 
       <main className="site-shell product-detail-page">
-        <div className="page-label">Product detail</div>
+        <div className="page-label">{product.title}</div>
 
         <section className="product-detail">
           <div className="product-detail__media">
@@ -74,7 +74,7 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
             <h1 className="product-detail__title">{product.title}</h1>
             <p className="product-detail__price">${product.price.toFixed(2)}</p>
 
-            <Form method="post">
+            <Form method="post" className="product-detail__form">
               <button
                 type="submit"
                 className="product-detail__button"
@@ -84,11 +84,7 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
               </button>
             </Form>
 
-            <div className="product-detail__meta">
-              {product.brand ? <p>Brand: {product.brand}</p> : null}
-              <p>Rating: {product.rating}</p>
-              <p>Stock: {product.stock}</p>
-            </div>
+            <div className="product-detail__divider" />
 
             <div className="product-detail__description">
               <p>Product Details</p>
@@ -96,7 +92,6 @@ export default function ProductDetail({ loaderData }: Route.ComponentProps) {
             </div>
           </div>
         </section>
-
         <div className="product-detail__back-row">
           <Link to="/" className="product-detail__back-link">
             ← Back to products
