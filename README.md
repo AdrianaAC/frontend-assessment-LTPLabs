@@ -1,213 +1,212 @@
-# LTP Store – Frontend Assessment
+# 🛍️ LTP Labs Frontend Assessment — Simple Online Store
 
-A simple responsive e-commerce application built for the **LTP Labs frontend assessment**.
+A modern e-commerce frontend built with **React Router v7**, implementing server-driven data flows, URL-based state, and a production-ready architecture inspired by Remix patterns.
 
-This project implements a product listing experience, product detail page, and shopping cart flow using **route-based data loading and mutations**, with a focus on clean frontend architecture, responsiveness, and usability.
+🔗 **Repository**  
+https://github.com/AdrianaAC/frontend-assessment-LTPLabs
 
-## Tech Stack
+---
 
-* React Router v7
-* TypeScript
-* Vite
-* CSS
-* DummyJSON API
+## 📌 Overview
 
-## Framework Note: React Router v7 instead of Remix
+This project implements a **simple online store** based on the provided challenge and Figma design.
 
-This challenge requested Remix. I implemented the project with **React Router v7**, which is the maintained continuation of the same route-module model that Remix popularized.
+It includes:
 
-This choice was intentional and made to preserve the challenge’s architectural intent while using the current actively maintained routing stack.
+- Product listing with filtering, sorting, and pagination
+- Product detail page with add-to-cart functionality
+- Persistent shopping cart (cookie-based)
+- Responsive UI following the provided design
+- Server-driven data loading using route loaders/actions
 
-### Remix concepts preserved in this implementation
+---
 
-The project keeps the exact data-flow style expected from a Remix application:
+## 🧠 Architectural Approach
 
-- **Route modules**
-  - each page lives in its own route file
-- **Loader functions**
-  - used for server-side data loading
-  - homepage products
-  - categories
-  - product detail
-  - cart contents
-- **Action functions**
-  - used for server-side mutations
-  - add to cart
-  - increase quantity
-  - decrease quantity
-  - remove item
-- **URL-driven state**
-  - pagination, sorting, and filtering are read from the URL
-- **Server-first data flow**
-  - data is fetched in loaders, not duplicated in client-only state
-- **Mutation + redirect pattern**
-  - cart updates happen through actions and return redirects
-- **Cookie-based persistence**
-  - cart state is stored on the server boundary through cookies
-- **Nested app routing model**
-  - the app uses route files, shared layout structure, and route-based rendering
-- **Progressive enhancement friendly forms**
-  - forms submit through route actions rather than custom client-side mutation plumbing
+Although the challenge requested **Remix**, this implementation uses **React Router v7**.
 
-### Why this still matches the spirit of the challenge
+> 💡 **Why?**
+>
+> React Router v7 is the evolution of Remix and shares the same core concepts:
+>
+> - Route modules
+> - Loaders & actions
+> - Server-first data fetching
+> - Nested routing architecture
 
-Although the project is not scaffolded with Remix itself, it follows the same architectural model the challenge was evaluating:
+This allowed the implementation of the **same architectural patterns expected in Remix**, while using a lighter and more flexible setup.
 
-- route-based data loading
-- route-based mutations
-- clean routing structure
-- server-oriented state flow
-- frontend best practices
+👉 The goal was to demonstrate:
 
-In practice, this implementation preserves the core Remix patterns the assessment was asking for, while using the current maintained evolution of that ecosystem.
+- Understanding of **server-driven UI**
+- **URL as the source of truth**
+- Clear separation between data and presentation
+- Scalable routing architecture
 
-## Features Implemented
+---
 
-### Homepage
+## ⚙️ Tech Stack
 
-* Product listing fetched from API
-* Category filtering
-* Sorting options
-* Pagination
-* Responsive grid layout
+- **React Router v7**
+- **TypeScript**
+- **Vite**
+- **CSS (custom, no UI frameworks)**
+- **Cookie-based persistence (cart state)**
 
-### Product Detail Page
+---
 
-* Product data fetched by route
-* Product image gallery
-* Add to cart action
-* Loading/submission feedback
+## 🚀 Features
 
-### Shopping Cart
+### 🏠 Homepage
 
-* Cookie-based cart persistence
-* Add to cart from product detail
-* Increase quantity
-* Decrease quantity
-* Remove items
-* Cart total calculation
-* Cart count shown in header
+- Product listing from API
+- Category filtering (as defined in Figma)
+- Sorting (price / title)
+- Pagination
+- URL-driven state (`?page=`, `?sort=`, `?category=`)
+- Responsive layout
 
-## Project Structure
+---
 
+### 📦 Product Detail Page
+
+- Product information (title, price, description, image)
+- Add to cart
+- Server-side form handling via action
+- Layout aligned with Figma design
+
+---
+
+### 🛒 Shopping Cart (Optional Feature Implemented)
+
+- Add/remove items
+- Quantity updates
+- Subtotal / shipping / total calculation
+- Persistent cart using cookies
+- Accessible via header icon
+
+---
+
+### 🧩 Routing & Data Flow
+
+- Route-based data loading (loaders)
+- Server-side mutations (actions)
+- URL-driven UI state
+- Clean separation of concerns
+
+---
+
+## 🎨 Design Implementation
+
+The UI was built based on the provided Figma design.
+
+- Layout structure follows the design system
+- Spacing, typography, and hierarchy respected
+- Responsive behavior implemented for different screen sizes
+- Category visibility matches the design specification
+
+---
+
+## 📸 Demo
+
+![Demo](./demo.gif)
+
+---
+
+## 📂 Project Structure
+
+```
 app/
-components/
-Header.tsx
-Pagination.tsx
-ProductCard.tsx
-ProductFilters.tsx
-lib/
-api.server.ts
-cart.server.ts
-types.ts
-url.ts
-routes/
-cart.tsx
-home.tsx
-product-detail.tsx
-app.css
-root.tsx
-routes.ts
+  components/
+    Header.tsx
+    ProductCard.tsx
+    CategorySidebar.tsx
+    Pagination.tsx
 
-## Data Flow
+  routes/
+    home.tsx
+    product-detail.tsx
+    cart.tsx
 
-### Loaders
+  lib/
+    cart.ts
+    products.ts
+    url.ts
 
-Used to fetch:
+  app.css
+```
 
-* product list
-* categories
-* selected product
-* cart contents
+---
 
-### Actions
+## ⚖️ Trade-offs & Decisions
 
-Used to handle:
+### React Router v7 vs Remix
 
-* add to cart
-* increase quantity
-* decrease quantity
-* remove item
+- Chose React Router v7 to leverage the same architectural model
+- Maintains loaders/actions and server-driven flows
+- Demonstrates understanding of modern routing paradigms
 
-## URL State
+---
 
-The homepage uses URL search params for stateful navigation:
+### UI Scope
 
-* page
-* category
-* sort
+- Focused on **core challenge requirements**
+- Additional pages (e.g. About, Blog) are placeholders and not part of the core scope
+- Priority given to **completeness of main flows**
 
-Examples:
+---
 
-* /
-* /?category=beauty
-* /?sort=price-desc
-* /?category=fragrances&sort=title-asc&page=2
+### State Management
 
-## Screenshots
+- No global state libraries used
+- URL + server + cookies = single source of truth
+- Keeps the architecture simple and scalable
 
-### Homepage
+---
 
-![Homepage](./public/screenshots/homepage.png)
+## 🧪 How to Run
 
-### Filters and Pagination
-
-![Filters and Pagination](./public/screenshots/filters-pagination.png)
-
-### Product Detail
-
-![Product Detail](./public/screenshots/product-detail.png)
-
-### Cart
-
-![Cart](./public/screenshots/cart.png)
-
-## Getting Started
-
-Install dependencies:
-
+```bash
 npm install
-
-Run the development server:
-
 npm run dev
+```
 
-## Assessment Requirements Coverage
+Then open:
 
-* Homepage implemented
-* Product detail page implemented
-* Shopping cart implemented
-* Product fetch from API implemented
-* Category filtering implemented
-* Sorting implemented
-* Pagination implemented
-* Add to cart implemented
-* Remove from cart implemented
-* Responsive layout implemented
-* Route-based loaders/actions implemented
-* Version-controlled project delivered
+http://localhost:5173
 
+---
 
-## Possible Future Improvements
+## ✅ Compliance with Challenge Requirements
 
-* Figma-perfect visual refinement
-* Better mobile micro-interactions
-* Toast feedback when adding to cart
-* Quantity selector directly on product detail
-* Better image gallery with selectable active image
-* Persistent backend/cart storage
-* Automated tests
+| Requirement               | Status |
+| ------------------------- | ------ |
+| Product listing           | ✅     |
+| Product detail page       | ✅     |
+| Sorting                   | ✅     |
+| Category filtering        | ✅     |
+| Pagination                | ✅     |
+| Add to cart               | ✅     |
+| Cart page (optional)      | ✅     |
+| Responsive design         | ✅     |
+| Server-side data handling | ✅     |
+| Figma-based UI            | ✅     |
 
+---
 
-## What I Focused On
+## 🧠 Final Notes
 
-For this assessment, I prioritized:
+This project was built with a strong focus on:
 
-* clear route structure
-* good separation of concerns
-* use of loader/action patterns
-* responsive layout
-* practical e-commerce UX
-* code that is easy to extend
+- Clean architecture
+- Scalability
+- Server-driven UI patterns
+- Real-world frontend practices
 
+Rather than only meeting the minimum requirements, the goal was to deliver a solution that reflects how a production-grade frontend application would be structured.
 
+---
+
+## 🙌 Thank You
+
+Thank you for the opportunity to work on this challenge — it was a great exercise in balancing **UX, architecture, and product thinking**.
