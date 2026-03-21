@@ -1,4 +1,11 @@
-import { Form, Link, redirect, useNavigation } from "react-router";
+import {
+  Form,
+  Link,
+  redirect,
+  useNavigation,
+  useRouteError,
+  isRouteErrorResponse,
+} from "react-router";
 import type { Route } from "./+types/cart";
 import Header from "~/components/Header";
 import { getProductsByIds } from "~/lib/api.server";
@@ -15,8 +22,6 @@ export function meta() {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const addedToCart = url.searchParams.get("added") === "1";
   const cart = await getCart(request);
 
   if (cart.length === 0) {
@@ -26,7 +31,6 @@ export async function loader({ request }: Route.LoaderArgs) {
       shipping: 20,
       total: 20,
       cartCount: 0,
-      addedToCart,
     };
   }
 
@@ -58,7 +62,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     shipping,
     total,
     cartCount: getCartCount(cart),
-    addedToCart,
   };
 }
 
@@ -303,5 +306,37 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
         )}
       </main>
     </>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  let title = "Unable to load cart";
+  let message = "We could not load your cart right now. Please try again.";
+
+  if (isRouteErrorResponse(error)) {
+    title = `${error.status} ${error.statusText}`;
+    message =
+      typeof error.data === "string"
+        ? error.data
+        : "The cart page could not be loaded.";
+  } else if (error instanceof Error) {
+    message = error.message;
+  }
+
+  return (
+    <main className="site-shell site-shell--detail cart-page">
+      <section className="state-card">
+        <p className="state-card__eyebrow">Shopping cart</p>
+        <h1 className="state-card__title">{title}</h1>
+        <p className="state-card__text">{message}</p>
+        <div className="state-card__actions">
+          <Link to="/" className="state-card__button">
+            Continue shopping
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }

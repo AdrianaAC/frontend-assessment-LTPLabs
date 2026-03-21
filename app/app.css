@@ -837,6 +837,132 @@ select {
   display: none;
 }
 
+.error-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.state-card {
+  width: min(100%, 620px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 28px;
+}
+
+.state-card__eyebrow {
+  margin: 0 0 8px;
+  color: #8a8a8a;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.state-card__title {
+  margin: 0 0 10px;
+  font-size: 28px;
+  line-height: 1.1;
+  color: #243047;
+}
+
+.state-card__text {
+  margin: 0;
+  color: #5b6473;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.state-card__actions {
+  margin-top: 18px;
+}
+
+.state-card__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 18px;
+  border: 1px solid var(--action);
+  background: var(--action);
+  color: var(--action-contrast);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.skeleton-block,
+.skeleton-line {
+  position: relative;
+  overflow: hidden;
+  background: #e3e3e3;
+}
+
+.skeleton-block::after,
+.skeleton-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  animation: skeleton-shimmer 1.2s infinite;
+}
+
+.skeleton-line {
+  height: 10px;
+  border-radius: 2px;
+}
+
+.skeleton-line--title {
+  width: 72%;
+}
+
+.skeleton-line--price {
+  width: 28%;
+}
+
+.skeleton-line--detail-title {
+  width: 68%;
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line--detail-price {
+  width: 26%;
+  height: 14px;
+  margin-bottom: 12px;
+}
+
+.skeleton-line--label {
+  width: 34%;
+}
+
+.skeleton-line--short {
+  width: 64%;
+}
+
+.product-card--skeleton {
+  pointer-events: none;
+}
+
+.product-detail__button--loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  cursor: wait;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 @media (max-width: 1100px) {
   .site-header__inner {
     grid-template-columns: 1fr;

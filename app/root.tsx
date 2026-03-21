@@ -5,6 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
+  Link,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -36,7 +37,7 @@ export default function App() {
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let title = "Something went wrong";
-  let message = "An unexpected error occurred.";
+  let message = "An unexpected error occurred while loading the store.";
 
   if (isRouteErrorResponse(error)) {
     title = `${error.status} ${error.statusText}`;
@@ -49,20 +50,17 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
-        padding: "2rem",
-        background: "#f8fafc",
-        color: "#0f172a",
-      }}
-    >
-      <div style={{ maxWidth: 560, textAlign: "center" }}>
-        <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>{title}</h1>
-        <p>{message}</p>
-      </div>
+    <main className="site-shell error-page">
+      <section className="state-card">
+        <p className="state-card__eyebrow">Store error</p>
+        <h1 className="state-card__title">{title}</h1>
+        <p className="state-card__text">{message}</p>
+        <div className="state-card__actions">
+          <Link to="/" className="state-card__button">
+            Back to homepage
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
